@@ -31,7 +31,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.02);
         }
 
-        /* 顶部区域 渐变质感 */
+        /* 顶部区域 */
         .app-header {
             background: linear-gradient(135deg, #1D9E75 0%, #158463 100%);
             color: white;
@@ -97,7 +97,6 @@
             flex-shrink: 0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             border: 1px solid rgba(0,0,0,0.02);
-            transition: all 0.2s;
         }
         .m-stat-label {
             font-size: 11px;
@@ -144,13 +143,12 @@
             padding: 16px 18px;
             margin-bottom: 14px;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 14px;
             transition: all 0.2s ease;
             border: 1px solid rgba(0,0,0,0.03);
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
             cursor: pointer;
-            backdrop-filter: blur(0px);
         }
         .m-card:active {
             transform: scale(0.99);
@@ -193,19 +191,41 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            flex-wrap: wrap;
         }
-        .phone-icon {
-            font-size: 11px;
+        .phone-icon, .experience-badge {
+            font-size: 10px;
             background: #F2F4F8;
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 20px;
             color: #1D9E75;
             font-weight: 500;
+        }
+        .university-badge {
+            font-size: 10px;
+            background: #F0F2FA;
+            padding: 3px 10px;
+            border-radius: 20px;
+            color: #4B5B8C;
+            font-weight: 500;
+        }
+        .website-link {
+            font-size: 10px;
+            background: #E8F0FE;
+            padding: 3px 10px;
+            border-radius: 20px;
+            color: #1D4ED8;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
         .m-badges {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
+            margin-top: 6px;
         }
         .m-tag {
             font-size: 10px;
@@ -214,6 +234,10 @@
             border-radius: 30px;
             font-weight: 600;
             color: #2C3E50;
+        }
+        .tag-civics {
+            background: #FFF0E6;
+            color: #C45C1B;
         }
         .tag-math {
             background: #E6F7F0;
@@ -225,6 +249,7 @@
             font-size: 22px;
             font-weight: 400;
             margin-left: 4px;
+            flex-shrink: 0;
         }
 
         /* 底部导航栏 */
@@ -266,7 +291,6 @@
             display: block;
         }
 
-        /* 空状态 */
         .empty-state {
             text-align: center;
             padding: 48px 20px;
@@ -300,7 +324,6 @@
         </div>
     </div>
 
-    <!-- 快捷统计栏 -->
     <div class="stats-scroller">
         <div class="m-stat-card">
             <div class="m-stat-label">📚 TEACHERS</div>
@@ -317,7 +340,7 @@
     </div>
 
     <div class="search-section">
-        <input type="text" class="m-input" id="searchInput" placeholder="🔍  Search by name, school or phone..." autocomplete="off">
+        <input type="text" class="m-input" id="searchInput" placeholder="🔍 Search name, school, phone or subject..." autocomplete="off">
     </div>
 
     <div class="list-wrapper" id="teacherListContainer">
@@ -332,49 +355,64 @@
 </div>
 
 <script>
-    // ======================= 完整教师数据集 (包含新添加的 Ghanil Othman Salum) =======================
-    const teachersData = [
-        { id: 1, name: 'Khalid Kh Salum', school: 'Kinuni Sec', subject: 'ICT', phone: null },
-        { id: 2, name: 'Khairat N. Abdalla', school: 'Kinyasini Sec', subject: 'ENGLISH', phone: null },
-        { id: 3, name: 'Sabrina S. Abdalla', school: 'Kwamtipura Sec', subject: 'GEOGRAPHY', phone: null },
-        { id: 4, name: 'Abed S. Abeid', school: 'Kwamtipura Sec', subject: 'MATH', phone: null },
-        { id: 5, name: 'Pili A. Juma', school: 'Kama Sec', subject: 'MATH', phone: null },
-        { id: 6, name: 'Ame Rashid Ame', school: 'Dr John P. Magufuli', subject: 'MATH', phone: null },
-        { id: 7, name: 'Badru Khatib Khamis', school: 'Abedi Amani Sec', subject: 'HISTORY', phone: null },
-        { id: 8, name: 'Rauhiya Ali Maalim', school: 'Hasnu Maka Sec', subject: 'KISWAHILI', phone: null },
-        { id: 9, name: 'Iptisam Amran Masoud', school: 'Nyerere Sec', subject: 'ICT', phone: null },
-        { id: 10, name: 'Haruwa Kh. Mohd', school: 'Aboud Jumbe Sec', subject: 'KISWAHILI', phone: null },
-        { id: 11, name: 'Salma H. Mbarak', school: 'Michenzani Sec', subject: 'BIOLOGY', phone: null },
-        { id: 12, name: 'Yusuf M. Kombo', school: 'Jang’ombe Sec', subject: 'CHEMISTRY', phone: null },
-        { id: 13, name: 'Amina O. Hamad', school: 'Mkunazini Sec', subject: 'ENGLISH', phone: null },
-        { id: 14, name: 'Rashid S. Suleiman', school: 'Chukwani Sec', subject: 'PHYSICS', phone: null },
-        { id: 15, name: 'Zuhura A. Khamis', school: 'Fuoni Sec', subject: 'KISWAHILI', phone: null },
-        { id: 16, name: 'Hamza M. Juma', school: 'Mbweni Sec', subject: 'MATH', phone: null },
-        { id: 17, name: 'Mwanaidi H. Ali', school: 'Kiboje Sec', subject: 'GEOGRAPHY', phone: null },
-        { id: 18, name: 'Juma S. Mwinyi', school: 'Mwanakwerekwe Sec', subject: 'HISTORY', phone: null },
-        { id: 19, name: 'Fatma I. Kombo', school: 'Magogoni Sec', subject: 'ICT', phone: null },
-        { id: 20, name: 'Ali S. Masoud', school: 'Bububu Sec', subject: 'CHEMISTRY', phone: null },
-        { id: 21, name: 'Saada M. Abdalla', school: 'Kijito Upele Sec', subject: 'ENGLISH', phone: null },
-        { id: 22, name: 'Khamis R. Othman', school: 'Mtoni Sec', subject: 'MATH', phone: null },
-        { id: 23, name: 'Zainab A. Haji', school: 'Michenzani Sec', subject: 'BIOLOGY', phone: null },
-        { id: 24, name: 'Iddi M. Makame', school: 'Magomeni Sec', subject: 'PHYSICS', phone: null },
-        { id: 25, name: 'Asha N. Vuai', school: 'Mazizini Sec', subject: 'KISWAHILI', phone: null },
-        { id: 26, name: 'Seif K. Hamad', school: 'Chumbuni Sec', subject: 'ICT', phone: null }
+    // ======================= 完整教师数据集 (包含新增两位教师: Ghanil 和 Samira) =======================
+    const baseTeachers = [
+        { id: 1, name: 'Khalid Kh Salum', school: 'Kinuni Sec', subject: 'ICT', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 2, name: 'Khairat N. Abdalla', school: 'Kinyasini Sec', subject: 'ENGLISH', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 3, name: 'Sabrina S. Abdalla', school: 'Kwamtipura Sec', subject: 'GEOGRAPHY', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 4, name: 'Abed S. Abeid', school: 'Kwamtipura Sec', subject: 'MATH', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 5, name: 'Pili A. Juma', school: 'Kama Sec', subject: 'MATH', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 6, name: 'Ame Rashid Ame', school: 'Dr John P. Magufuli', subject: 'MATH', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 7, name: 'Badru Khatib Khamis', school: 'Abedi Amani Sec', subject: 'HISTORY', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 8, name: 'Rauhiya Ali Maalim', school: 'Hasnu Maka Sec', subject: 'KISWAHILI', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 9, name: 'Iptisam Amran Masoud', school: 'Nyerere Sec', subject: 'ICT', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 10, name: 'Haruwa Kh. Mohd', school: 'Aboud Jumbe Sec', subject: 'KISWAHILI', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 11, name: 'Salma H. Mbarak', school: 'Michenzani Sec', subject: 'BIOLOGY', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 12, name: 'Yusuf M. Kombo', school: 'Jang’ombe Sec', subject: 'CHEMISTRY', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 13, name: 'Amina O. Hamad', school: 'Mkunazini Sec', subject: 'ENGLISH', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 14, name: 'Rashid S. Suleiman', school: 'Chukwani Sec', subject: 'PHYSICS', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 15, name: 'Zuhura A. Khamis', school: 'Fuoni Sec', subject: 'KISWAHILI', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 16, name: 'Hamza M. Juma', school: 'Mbweni Sec', subject: 'MATH', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 17, name: 'Mwanaidi H. Ali', school: 'Kiboje Sec', subject: 'GEOGRAPHY', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 18, name: 'Juma S. Mwinyi', school: 'Mwanakwerekwe Sec', subject: 'HISTORY', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 19, name: 'Fatma I. Kombo', school: 'Magogoni Sec', subject: 'ICT', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 20, name: 'Ali S. Masoud', school: 'Bububu Sec', subject: 'CHEMISTRY', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 21, name: 'Saada M. Abdalla', school: 'Kijito Upele Sec', subject: 'ENGLISH', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 22, name: 'Khamis R. Othman', school: 'Mtoni Sec', subject: 'MATH', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 23, name: 'Zainab A. Haji', school: 'Michenzani Sec', subject: 'BIOLOGY', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 24, name: 'Iddi M. Makame', school: 'Magomeni Sec', subject: 'PHYSICS', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 25, name: 'Asha N. Vuai', school: 'Mazizini Sec', subject: 'KISWAHILI', phone: null, experienceYears: null, university: null, personalWebsite: null },
+        { id: 26, name: 'Seif K. Hamad', school: 'Chumbuni Sec', subject: 'ICT', phone: null, experienceYears: null, university: null, personalWebsite: null }
     ];
 
-    // ----- 新加教师记录: Ghanil Othman Salum (根据要求) -----
-    const newTeacher = {
+    // 1. 新增教师: Ghanil Othman Salum
+    const ghanilTeacher = {
         id: 27,
         name: 'Ghanil Othman Salum',
-        school: 'Aboud Jumbe Mwinyi Sec. School',   // 完全遵循要求名称
+        school: 'Aboud Jumbe Mwinyi Sec. School',
         subject: 'MATH',
-        phone: '0760479898'
+        phone: '0760479898',
+        experienceYears: null,
+        university: null,
+        personalWebsite: null
     };
 
-    // 合并数据 (保证完整教师列表包含新学员)
-    const allTeachers = [...teachersData, newTeacher];
+    // 2. 新增教师: Samira Zuberi Saidi (完整资料)
+    const samiraTeacher = {
+        id: 28,
+        name: 'Samira Zuberi Saidi',
+        school: 'KIDONGO CHEKUNDU SEC',
+        subject: 'CIVICS',
+        phone: '718494204',
+        experienceYears: 5,
+        university: 'Summait University',
+        personalWebsite: 'https://samirasukheil4-del.github.io/civics1/'
+    };
 
-    // 辅助函数：去重学校并计算独立学校数量
+    // 合并所有教师
+    const allTeachers = [...baseTeachers, ghanilTeacher, samiraTeacher];
+
+    // 辅助函数：获取独立学校数量
     function getUniqueSchoolCount(teachers) {
         const schoolsSet = new Set();
         teachers.forEach(t => {
@@ -383,7 +421,7 @@
         return schoolsSet.size;
     }
 
-    // 渲染教师列表 + 更新统计 (实时响应搜索)
+    // 渲染教师列表 (支持搜索)
     function renderTeacherList(searchTerm = '') {
         const container = document.getElementById('teacherListContainer');
         if (!container) return;
@@ -394,24 +432,26 @@
             filtered = allTeachers.filter(teacher => 
                 teacher.name.toLowerCase().includes(lowerTerm) ||
                 teacher.school.toLowerCase().includes(lowerTerm) ||
-                (teacher.phone && teacher.phone.includes(lowerTerm))
+                (teacher.phone && teacher.phone.includes(lowerTerm)) ||
+                (teacher.subject && teacher.subject.toLowerCase().includes(lowerTerm)) ||
+                (teacher.university && teacher.university.toLowerCase().includes(lowerTerm))
             );
         }
 
-        // 更新统计卡片 (教师总数 & 独立学校数)
-        const totalTeachers = allTeachers.length;        // 全量教师 (含新增)
+        // 更新统计 (教师总数 & 独立学校数)
+        const totalTeachers = allTeachers.length;
         const uniqueSchoolsCount = getUniqueSchoolCount(allTeachers);
         document.getElementById('teacherCount').innerText = totalTeachers;
         document.getElementById('schoolCount').innerText = uniqueSchoolsCount;
 
         if (filtered.length === 0) {
-            container.innerHTML = `<div class="empty-state">✨ No teacher found<br>Try different keyword</div>`;
+            container.innerHTML = `<div class="empty-state">✨ No educator found<br>Try different keyword</div>`;
             return;
         }
 
         // 生成卡片 HTML
         container.innerHTML = filtered.map(teacher => {
-            // 获取姓名首字母组合 (首字 + 尾字首字母)
+            // 头像字母
             const nameParts = teacher.name.trim().split(' ');
             let avatarLetters = '👤';
             if (nameParts.length >= 2) {
@@ -420,19 +460,35 @@
                 avatarLetters = `${firstInitial}${lastInitial}`.toUpperCase();
             } else if (teacher.name.length > 0) {
                 avatarLetters = teacher.name.charAt(0).toUpperCase();
-            } else {
-                avatarLetters = 'SC';
             }
             
-            // 数学学科特殊标记样式
+            // 学科样式
             const isMath = teacher.subject === 'MATH';
-            const subjectTagClass = isMath ? 'tag-math' : '';
+            const isCivics = teacher.subject === 'CIVICS';
+            let subjectTagClass = '';
+            if (isMath) subjectTagClass = 'tag-math';
+            if (isCivics) subjectTagClass = 'tag-civics';
             
-            // 显示手机号如果有的话
+            // 手机号显示
             const phoneDisplay = teacher.phone ? `<span class="phone-icon">📞 ${teacher.phone}</span>` : '';
             
+            // 教龄显示
+            const expDisplay = (teacher.experienceYears !== null && teacher.experienceYears !== undefined) 
+                ? `<span class="experience-badge">⭐ ${teacher.experienceYears} yr exp</span>` 
+                : '';
+            
+            // 大学毕业院校
+            const uniDisplay = teacher.university 
+                ? `<span class="university-badge">🎓 ${teacher.university}</span>` 
+                : '';
+            
+            // 个人网站链接 (教育基站)
+            const websiteDisplay = teacher.personalWebsite 
+                ? `<a href="${teacher.personalWebsite}" target="_blank" rel="noopener noreferrer" class="website-link" onclick="event.stopPropagation();">🌐 Education Hub</a>` 
+                : '';
+            
             return `
-                <div class="m-card" data-teacher-id="${teacher.id}" data-name="${teacher.name}">
+                <div class="m-card" data-teacher-id="${teacher.id}" data-name="${escapeHtml(teacher.name)}" data-website="${teacher.personalWebsite || ''}">
                     <div class="m-avatar">${avatarLetters}</div>
                     <div class="m-details">
                         <div class="m-name">
@@ -440,11 +496,15 @@
                         </div>
                         <div class="m-subtext">
                             🏫 ${escapeHtml(teacher.school)}
-                            ${phoneDisplay ? `<span style="margin-left: 4px;">${phoneDisplay}</span>` : ''}
+                            ${phoneDisplay ? `<span>${phoneDisplay}</span>` : ''}
+                        </div>
+                        <div class="m-subtext" style="margin-bottom: 4px;">
+                            ${expDisplay} ${uniDisplay}
                         </div>
                         <div class="m-badges">
                             <span class="m-tag ${subjectTagClass}">📖 ${teacher.subject}</span>
                             <span class="m-tag" style="background:#EFF5FF; color:#1D4ED8;">✅ VERIFIED</span>
+                            ${websiteDisplay ? `<span>${websiteDisplay}</span>` : ''}
                         </div>
                     </div>
                     <div class="m-arrow">›</div>
@@ -452,16 +512,21 @@
             `;
         }).join('');
 
-        // 绑定每个卡片的点击事件 (动态绑定，利用事件委托或者重新获取)
+        // 绑定每个卡片的点击事件 (展示详细教师信息，包含基站链接)
         document.querySelectorAll('.m-card').forEach(card => {
+            // 避免与内部a标签冲突，但保留卡片主体弹窗
             card.addEventListener('click', (e) => {
-                // 阻止冒泡避免误触
-                e.stopPropagation();
+                // 如果点击的目标是链接或者链接内部，不触发卡片主弹窗（让链接正常工作）
+                if (e.target.closest('.website-link')) {
+                    return;
+                }
                 const teacherId = card.getAttribute('data-teacher-id');
                 const teacherObj = allTeachers.find(t => t.id == teacherId);
                 if (teacherObj) {
-                    let infoMsg = `📌 Station: ${teacherObj.name}\n🏫 School: ${teacherObj.school}\n📖 Subject: ${teacherObj.subject}`;
-                    if (teacherObj.phone) infoMsg += `\n📞 Contact: ${teacherObj.phone}`;
+                    let infoMsg = `📌 ${teacherObj.name}\n🏫 School: ${teacherObj.school}\n📖 Subject: ${teacherObj.subject}\n📞 Phone: ${teacherObj.phone || 'N/A'}`;
+                    if (teacherObj.experienceYears) infoMsg += `\n⭐ Experience: ${teacherObj.experienceYears} years`;
+                    if (teacherObj.university) infoMsg += `\n🎓 University: ${teacherObj.university}`;
+                    if (teacherObj.personalWebsite) infoMsg += `\n🌐 Personal Hub: ${teacherObj.personalWebsite}`;
                     alert(infoMsg);
                 } else {
                     alert(`Opening profile: ${card.getAttribute('data-name') || 'Educator'}`);
@@ -470,7 +535,7 @@
         });
     }
 
-    // 简单的防XSS辅助函数
+    // 简单防XSS
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -478,24 +543,21 @@
             if (m === '<') return '&lt;';
             if (m === '>') return '&gt;';
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
         });
     }
 
-    // 搜索输入防抖处理
+    // 搜索防抖
     let debounceTimeout;
     function handleSearchInput() {
         const searchInput = document.getElementById('searchInput');
         if (!searchInput) return;
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
-            const query = searchInput.value;
-            renderTeacherList(query);
+            renderTeacherList(searchInput.value);
         }, 180);
     }
 
-    // 底部导航模拟 (仅交互反馈)
+    // 底部导航交互
     function setupBottomNav() {
         const stationsBtn = document.getElementById('navStations');
         const courseBtn = document.getElementById('navCourse');
@@ -512,66 +574,53 @@
             stationsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 setActive(stationsBtn);
-                alert('🏫 Stations Hub — all teacher stations are shown in the list.');
+                alert('🏫 Stations Hub — All teacher stations with enriched profiles are ready.');
             });
         }
         if (courseBtn) {
             courseBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 setActive(courseBtn);
-                alert('📚 AI Course Library — coming soon for Zanzibar teachers.');
+                alert('📚 AI Course Library — Empowering Zanzibar educators with AI tools.');
             });
         }
         if (profileBtn) {
             profileBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 setActive(profileBtn);
-                alert('👤 Admin Profile: PI LI | SAY CLASS Ecosystem');
+                alert('👤 Admin: PI LI | SAY CLASS Ecosystem | AI Transformation Hub');
             });
         }
     }
 
-    // 额外校验: 是否已经正确包含新增教师 Ghanil Othman Salum
-    function verifyNewTeacherAdded() {
-        const exists = allTeachers.some(teacher => teacher.name === 'Ghanil Othman Salum' && teacher.school === 'Aboud Jumbe Mwinyi Sec. School');
-        if (!exists) {
-            console.warn("教师未成功添加, 强制二次添加");
-            // 后备安全注入
-            if (!allTeachers.find(t => t.phone === '0760479898')) {
-                allTeachers.push({
-                    id: 28,
-                    name: 'Ghanil Othman Salum',
-                    school: 'Aboud Jumbe Mwinyi Sec. School',
-                    subject: 'MATH',
-                    phone: '0760479898'
-                });
+    // 验证新增教师数据完整
+    function verifyNewTeachers() {
+        const ghanilExists = allTeachers.some(t => t.name === 'Ghanil Othman Salum' && t.phone === '0760479898');
+        const samiraExists = allTeachers.some(t => t.name === 'Samira Zuberi Saidi' && t.school === 'KIDONGO CHEKUNDU SEC');
+        if (!ghanilExists || !samiraExists) {
+            console.warn("后备保障: 重新注入教师");
+            if (!ghanilExists) {
+                allTeachers.push({ id: 99, name: 'Ghanil Othman Salum', school: 'Aboud Jumbe Mwinyi Sec. School', subject: 'MATH', phone: '0760479898', experienceYears: null, university: null, personalWebsite: null });
+            }
+            if (!samiraExists) {
+                allTeachers.push({ id: 100, name: 'Samira Zuberi Saidi', school: 'KIDONGO CHEKUNDU SEC', subject: 'CIVICS', phone: '718494204', experienceYears: 5, university: 'Summait University', personalWebsite: 'https://samirasukheil4-del.github.io/civics1/' });
             }
         }
-        // 重新渲染确保
         renderTeacherList(document.getElementById('searchInput')?.value || '');
+        console.log("✅ 教师数据加载完毕: 包含 Samira Zuberi Saidi (CIVICS, 5年教龄, 基站已绑定)");
     }
 
     // 初始化
     function init() {
-        // 挂载搜索监听
         const searchElem = document.getElementById('searchInput');
         if (searchElem) {
             searchElem.addEventListener('input', handleSearchInput);
         }
         setupBottomNav();
         renderTeacherList('');
-        verifyNewTeacherAdded();   // 保证新增教师完整显示
-        
-        // 主动在控制台输出确认新增教师信息 (可选)
-        const ghanilTeacher = allTeachers.find(t => t.name === 'Ghanil Othman Salum');
-        if (ghanilTeacher) {
-            console.log(`✅ 新教师已加载: ${ghanilTeacher.name}, 学校: ${ghanilTeacher.school}, 电话: ${ghanilTeacher.phone}, 学科: ${ghanilTeacher.subject}`);
-        } else {
-            console.warn("⚠️ 未找到新增教师，但渲染时强制插入了安全备份");
-        }
+        verifyNewTeachers(); // 确保新增Samira完整展示
     }
 
-    // 启动所有逻辑
     init();
 </script>
 </body>
